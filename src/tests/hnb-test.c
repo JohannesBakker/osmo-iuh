@@ -835,7 +835,7 @@ static struct msgb *gen_initue_lu(int is_ps, uint32_t conn_id, const char *imsi)
 		/*	 len, IMSI/type, IMSI-------------------------------- */
 			 0x08, 0x29, 0x26, 0x24, 0x10, 0x32, 0x54, 0x76, 0x98,
 			 0x33, 0x03, 0x57, 0x18 , 0xb2 };
-	uint8_t plmn_id[] = { 0x09, 0x01, 0x99 };
+	uint8_t plmn_id[] = { 0x09, 0xf1, 0x99 };
 	RANAP_GlobalRNC_ID_t rnc_id = {
 		.rNC_ID = 23,
 		.pLMNidentity.buf = plmn_id,
