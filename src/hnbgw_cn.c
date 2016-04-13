@@ -248,6 +248,27 @@ static int handle_cn_unitdata(struct hnbgw_cnlink *cnlink,
 			      const struct osmo_scu_unitdata_param *param,
 			      struct osmo_prim_hdr *oph)
 {
+	LOGP(DMAIN, LOGL_DEBUG, "N-UNITDATA.ind:"
+	     " called_addr:  { presence %x, pc %d, ssn %d }"
+	     " calling_addr: { presence %x, pc %d, ssn %d }"
+	     " in_sequence_control %d"
+	     " return_option %d"
+	     " importance %d"
+	     "\n",
+	     param->called_addr.presence,
+	     param->called_addr.pc,
+	     param->called_addr.ssn,
+	     param->calling_addr.presence,
+	     param->calling_addr.pc,
+	     param->calling_addr.ssn,
+	     param->in_sequence_control,
+	     param->return_option,
+	     param->importance);
+	LOGP(DMAIN, LOGL_DEBUG, "N-UNITDATA.ind: called_addr: %s\n",
+	     inet_ntoa(param->called_addr.ip.v4));
+	LOGP(DMAIN, LOGL_DEBUG, "N-UNITDATA.ind: calling_addr: %s\n",
+	     inet_ntoa(param->calling_addr.ip.v4));
+
 	if (param->called_addr.ssn != OSMO_SCCP_SSN_RANAP) {
 		LOGP(DMAIN, LOGL_NOTICE, "N-UNITDATA.ind for unknown SSN %u\n",
 			param->called_addr.ssn);
