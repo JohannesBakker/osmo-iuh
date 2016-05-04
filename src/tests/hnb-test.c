@@ -860,6 +860,38 @@ static struct msgb *gen_initue_lu(int is_ps, uint32_t conn_id, const char *imsi)
 	return ranap_new_msg_initial_ue(conn_id, is_ps, &rnc_id, lu, sizeof(lu));
 }
 
+static struct msgb *gen_initue_paging_resp(int is_ps, uint32_t conn_id, const char *imsi)
+{
+	uint8_t lu[] = { GSM48_PDISC_MM, GSM48_MT_MM_LOC_UPD_REQUEST,
+		         0x70, 0x62, 0xf2, 0x30, 0xff, 0xf3, 0x57,
+		/*	 len, IMSI/type, IMSI-------------------------------- */
+			 0x08, 0x29, 0x26, 0x24, 0x10, 0x32, 0x54, 0x76, 0x98,
+			 0x33, 0x03, 0x57, 0x18 , 0xb2 };
+	uint8_t plmn_id[] = { 0x09, 0x01, 0x99 };
+	RANAP_GlobalRNC_ID_t rnc_id = {
+		.rNC_ID = 23,
+		.pLMNidentity.buf = plmn_id,
+		.pLMNidentity.size = sizeof(plmn_id),
+	};
+
+	/* FIXME: patch imsi */
+	/* Note: the Mobile Identitiy IE's IMSI data has the identity type and
+	 * an even/odd indicator bit encoded in the first octet. So the first
+	 * octet looks like this:
+	 *
+	 *   8  7  6  5 | 4        | 3 2 1
+	 *   IMSI-digit | even/odd | type
+	 *
+	 * followed by the remaining IMSI digits.
+	 * If digit count is even (bit 4 == 0), that first high-nibble is 0xf.
+	 * (derived from Iu pcap Location Update Request msg and TS 25.413)
+	 *
+	 * TODO I'm only 90% sure about this
+	 */
+
+	return ranap_new_msg_initial_ue(conn_id, is_ps, &rnc_id, lu, sizeof(lu));
+}
+
 DEFUN(chan, chan_cmd,
 	"channel (cs|ps) lu imsi IMSI",
 	"Open a new Signalling Connection\n"
